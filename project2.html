@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDos List</title>
+    <script src="https://kit.fontawesome.com/047210d7b5.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .search-bar {
+            background: #333;
+            height: 60px;
+        }
+
+        .menu {
+            float: left;
+        }
+
+        .menu ul {
+            display: flex;
+        }
+
+        .menu ul li {
+            display: inline-block;
+            color: #fff;
+        }
+
+        .menu ul li a {
+            padding: 22px;
+            line-height: 60px;
+            text-decoration: none;
+            /* color: white; */
+        }
+
+        .menu ul li:hover {
+            background: red;
+        }
+
+        .search-box {
+            float: right;
+            display: flex;
+            margin: 10px 25px;
+        }
+
+        .tbox {
+            padding: 10px;
+            width: 250px;
+        }
+
+        .btn {
+            width: 50px;
+            background: #009688;
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .container1 {
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-control {
+            width: 400px;
+            height: 20px;
+        }
+
+        .form-control1 {
+            width: 400px;
+            height: 80px;
+        }
+
+        .btn1 {
+
+            background-color: rgb(50, 66, 215);
+            color: white;
+            border-radius: 4px;
+        }
+
+        .containerBtn {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            column-gap: 20px;
+            
+        }
+
+        .table {
+            /* width:800px; */
+            margin: 30px;
+            /* display: flex; */
+            /* flex-direction: row; */
+            /* justify-content: center; */
+            /* align-items: center; */
+            line-height: 30px;
+            margin-left: auto;
+            margin-right: auto;
+
+        }
+
+
+        table th {
+            background-color: grey;
+        }
+
+        .btn2 {
+            background-color: rgb(50, 66, 215);
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="search-bar">
+        <div class="menu">
+            <ul>
+                <li><a href="https://google.com"></a>Home</li>
+                <li><a href=""></a>About</li>
+                <li><a href=""></a>Contacts</li>
+                <!-- <select name="things to do">
+                    <option value="v">Items</option>
+                    <option value="ve">Weekdays</option>
+                    <option value="vx">Weekends</option>
+                </select> -->
+            </ul>
+        </div>
+        <div class="search-box">
+            <input type="text" class="tbox" placeholder="how can i help you?">
+            <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </div>
+    <div class="container">
+        <h2 class="text-center">ToDos List</h2>
+        <div class="container1">
+            <!-- <form> -->
+            <div class="form-group">
+                <label for="title">Title <br></label>
+                <input type="text" class="form-control" id="title">
+                <small><br>Add an item to the list </small>
+            </div>
+            <div class="form-group1">
+                <label for="description"><br> Description <br></label>
+                <textarea class="form-control1" id="description" cols="30" rows="5"></textarea>
+            </div>
+        </div>
+        <div class="containerBtn">
+            <button id="add" class="btn1">Add to the list</button>
+            <button id="clear" class="btn1" onclick="clearStorage()">Clear list</button>
+        </div>
+        <!-- </form> -->
+    </div>
+
+    <h2 align="center"><br> Your Items </h2>
+    <div id="items">
+        <table class="table">
+            <tr>
+                <th width="40px">SNo</th>
+                <th width="200px">Item Title</th>
+                <th width="500px">Item Description</th>
+                <th width="60px">Actions</th>
+            </tr>
+            <tbody id="tableBody">
+                <!-- <tbody> -->
+                <tr>
+                    <td>1</td>
+                    <td>Get some coffee</td>
+                    <td>You need a coffee as you are a coder</td>
+                    <td><button class="btn2">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function getAndUpdate() {
+            console.log("updating list...")
+            titl = document.getElementById("title").value;
+            desc = document.getElementById("description").value;
+
+            if (localStorage.getItem("itemsJson") == null) {
+                itemJsonArray = [];
+                itemJsonArray.push([titl, desc]);
+                localStorage.setItem("itemsJson", JSON.stringify(itemJsonArray))
+            }
+            else {
+                itemJsonArrayStr = localStorage.getItem("itemsJson");
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+                itemJsonArray.push([titl, desc]);
+                localStorage.setItem("itemsJson", JSON.stringify(itemJsonArray))
+            }
+            update();
+        }
+        function update() {
+            if (localStorage.getItem("itemsJson") == null) {
+                itemJsonArray = [];
+                localStorage.setItem("itemsJson", JSON.stringify(itemJsonArray))
+            }
+            else {
+                itemJsonArrayStr = localStorage.getItem("itemsJson");
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+            }
+
+            // Populate the table
+            let tableBody = document.getElementById("tableBody");
+            let str = "";
+            itemJsonArray.forEach((element, index) => {
+                str += `
+                    <tr>
+                    <td>${index + 1}</td>
+                    <td>${element[0]}</td>
+                    <td>${element[1]}</td>
+                    <td><button class="btn2" onclick="deleted(${index})">Delete</button></td>
+                </tr>`;
+            });
+            tableBody.innerHTML = str;
+        }
+        add = document.getElementById("add");
+        add.addEventListener("click", getAndUpdate);
+        update();
+        function deleted(itemIndex) {
+            console.log("Delete", itemIndex)
+            itemJsonArrayStr = localStorage.getItem("itemsJson");
+            itemJsonArray = JSON.parse(itemJsonArrayStr);
+            // Delete itemIndex from the array
+            itemJsonArray.splice(itemIndex, 1);
+            localStorage.setItem("itemsJson", JSON.stringify(itemJsonArray));
+            update();
+        }
+        function clearStorage() {
+            if (confirm("Do you really want to clear?")) {
+                console.log("Clearing the storage");
+                localStorage.clear();
+                update();
+            }
+        }
+    </script>
+</body>
+
+</html>
